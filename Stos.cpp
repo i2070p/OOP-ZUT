@@ -20,13 +20,13 @@ class Element {
 
 class Stos {
   public:
-         Stos(){liczba_elementow=0;};
-         ~Stos(){ wyczysc(); };
          int pop(); //zdejm
          int liczbaElementow();
          void push(int); //poloz
          void wyczysc();   
          void usunGorny();
+         Stos(){liczba_elementow=0;};
+         ~Stos(){ wyczysc(); };
   private:
          Element* gorny; 
          int liczba_elementow;  
