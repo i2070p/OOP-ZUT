@@ -15,18 +15,23 @@ class Nazwa {
 
 		void jakasMetoda();
 		string toString();
+		friend ostream & operator<< (ostream &out, Nazwa &src);   
 	private:
 		int pole;	
 };
 
 int main(int argc, char *argv[]) {
-	Nazwa* ob = new Nazwa(5);
+	Nazwa* ob = new Nazwa(1);
 
-	cout << ob->toString();
+	cout << *ob;
 	
 	
 	getchar();
 	return(EXIT_SUCCESS);
+}
+
+ostream & operator<< (ostream &out, Nazwa &src) {
+  return out << src.toString() << endl;
 }
 
 Nazwa::Nazwa(int _pole): pole(_pole) {
