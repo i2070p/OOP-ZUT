@@ -10,6 +10,8 @@
 
 using namespace std;
 
+int str2Int(string);
+string getTime();
 
 class Student {
 public:
@@ -18,6 +20,7 @@ public:
   ~Student();
   int getId();
   void changeNext(Student*);
+  void markUpdate(int,int);
   string toString();
   string toSaveString();
   Student* Next();
@@ -33,18 +36,23 @@ class Group {
 public:
   Group (int);
   Group (Group&);
+  Group (string);
   ~Group ();
   void addStudent(string, int*);
+  void addStudent(int, string, int*);
   void printStudents();
   void removeStudent(int);
   void removeStudents();
   void save(string);
+  void fastSave();
   void load(string);
   string toString();
   Student* locateStudent(int);
 private:
   int groupId, studentsCount, idMaker;
   Student *tail, *head;
+  string filename;
+  string *parser(string);
 };
 
 
@@ -99,19 +107,37 @@ int main ()
 
   Group *grp3 = new Group(*grp2);
   
- // grp1->printStudents();
-  
-  grp2->save("meti.txt");
-  grp2->load("meti.txt");
-//  grp2->printStudents();
-//  grp3->printStudents();
 
+  
+  grp1->save("plik1.txt");
+
+  Group *grp4 = new Group("plik1.txt");
+  grp4->locateStudent(3)->markUpdate(2,5);
+  grp1->printStudents();
+  grp2->printStudents();
+  grp3->printStudents();
+  grp4->printStudents();
+
+  grp1->printStudents();
+
+  grp1->fastSave();
+  _sleep(1000);
+  grp2->fastSave();
+  _sleep(1000);
+  grp3->fastSave();
+  _sleep(1000); 
+  grp4->fastSave();
+  
   getchar();
 
   return 0;
 }
 
 //*****************STUDENT**********************************************
+
+void Student::markUpdate(int mark_id,int value) {
+	if (mark_id >= 0 && mark_id <10) marks[mark_id]=value;
+}
 
 Student::~Student() {
   delete marks;
@@ -134,16 +160,15 @@ initial(_initial), studentId(_studentId), groupId(_groupId), marks(_marks) {
 string Student::toString(){
   stringstream s;
   s << "Student Id: " << studentId << ", Initial: " << initial << ", Group ID: " << groupId << endl << "Marks: " << endl;
-  for (int i=0; i<marksCount; i++) s << "Mark " << i << ": " << marks[i] << endl;
+  for (int i=0; i<marksCount; i++) s << marks[i] << " ";
   s << endl;
   return(s.str());
 }
 
 string Student::toSaveString(){
   stringstream s;
-  s << studentId << ";" << initial << ";" << groupId << ";";
-  for (int i=0; i<marksCount; i++) s << marks[i] << ";";
-  s << endl;
+  s << endl << studentId << ";" << initial << ";" << groupId << ";";
+  for (int i=0; i<marksCount; i++)  s << marks[i] << ";";
   return(s.str());
 }
 
@@ -156,6 +181,12 @@ Student::Student(Student& src) {
   changeNext(NULL);
 }
 //*****************GROUP************************************************
+
+void Group::fastSave() {
+	stringstream name;
+	name << "Grupa_" << groupId << "_" << getTime();
+	save(name.str());
+}
 
 Group::~Group (){
   removeStudents();
@@ -175,6 +206,14 @@ groupId(_groupId) {
   tail = NULL;
   studentsCount=0;
   idMaker=0;
+}
+
+Group::Group(string _filename): filename(_filename) {
+  head = NULL;
+  tail = NULL;
+  studentsCount=0;
+  idMaker=0;
+  load(filename);
 }
 
 Group::Group(Group &source) {
@@ -263,52 +302,69 @@ void Group::removeStudent(int _id){
 }
 
 void Group::save(string path) {
-	ofstream outputFile(path);
-	if (!outputFile.is_open())
-		throw exception("error");
-	outputFile << groupId <<";"<< studentsCount <<";" <<endl;
-	Student* tmp;
-	tmp=head;
-    for (int i=0;i<studentsCount;i++)  { 
-	  tmp=head;
-	  outputFile << tmp->toSaveString();
-	  head=head->Next();
-    }	
-	outputFile.close();
+        ofstream outputFile(path);
+        if (!outputFile.is_open())
+                throw exception("Can't write file!");
+        outputFile << groupId <<";"<<endl;
+        Student* tmp;
+        tmp=head;
+    for (int i=0;i<studentsCount;i++) {
+         outputFile << tmp->toSaveString();
+		 tmp=tmp->Next();
+    }        
+        outputFile.close();
 
 }
 
 void Group::load(string path) {
-	ifstream inputFile(path);
-	if (!inputFile.is_open())
-		throw exception("error");
-	string s;
-	inputFile >> s;
-	
-	string tab[2];
+		if (studentsCount>0) removeStudents();
+		ifstream inputFile(path);
+        if (!inputFile.is_open())
+                throw exception("Can't read file!");
+        string s;
+        inputFile >> s;
+        
+        string *t = parser(s);
+
+		groupId=str2Int(t[0]);
+ 
+        while (!inputFile.eof()) {
+				int j=0;
+				string line="";
+				inputFile >> line;
+				string *t1 = parser(line);
+				int *_marks = new int[10];
+				for (int i=0; i<10; i++) _marks[i]=str2Int(t1[3+i]);
+				idMaker=str2Int(t1[0]);
+				addStudent(t1[1],_marks);
+        }
+		inputFile.close();
+}
+
+ string* Group::parser(string s) {
+	string *result;
+	int elementsCount = 0;
+    for (int i=0; i<s.length(); i++) if (s[i]!=';') elementsCount++; 
+	result = new string[elementsCount];
 	int j=0;
-	
-	for (int i=0; i<s.length(); i++) {
-		if (s[i]!=';') tab[j]+=s[i]; else j++;
-	}
+	for (int i=0; i<s.length(); i++) if (s[i]!=';') result[j]+=s[i]; else j++;
+	return result;
+ }
 
-	istringstream ss(tab[0]);
-	ss >> groupId;
-	istringstream ss(tab[0]);
-	ss >> studentsCount;
+int str2Int(string s) {
+	int result;
+	istringstream ss(s);
+    ss >> result;
+	return (result);
+}
 
-	//Student *tmp;
-	int tab2[13];
-	j=0;
-	while (!inputFile.eof()) {
-		inputFile >> s;
-		for (int i=0; i<s.length(); i++) if (s[i]!=';') tab[j]+=s[i]; else j++;
-		
-		addStudent(tab[1],tab[2]-'0',tab[3]-'0', tab[4]-'0', tab[5]-'0', tab[6]-'0', tab[7]-'0', tab[8]-'0', tab[9]-'0');
-	}
-		
-
-
-
-	inputFile.close();
+string getTime() {
+  string result=""; 
+  time_t now = time(0);
+  tm tstruct;
+  char buf[10];
+  tstruct = *localtime(&now);
+  strftime(buf, sizeof(buf), "%X", &tstruct);
+  for (int i=0; i<10; i++) if (buf[i]!=':') result+=buf[i];
+  return result;
 }
