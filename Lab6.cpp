@@ -57,7 +57,8 @@ int main(int argc, char *argv[]) {
 
 double** Matrix::createMatrix(int _height, int _width) {
 	double **tmp_matrix =  new double*[_height];
-	_ifor(_height) tmp_matrix[i]=new double(_width);
+	_ifor(_height) tmp_matrix[i]=new double[_width];
+	_for(i, _height) _for(j,_width) tmp_matrix[i][j]=0.0;
 	return(tmp_matrix);
 }
 
@@ -71,7 +72,6 @@ void Matrix::add(double value) {
 
 Matrix::Matrix(int _height, int _width): height(_height), width(_width) {
 	matrix=createMatrix(height,width);
-	_for(i, height) _for(j,width) matrix[i][j]=0.0;
 }
 
 void Matrix::setElement(int x, int y, double value) {
@@ -79,7 +79,7 @@ void Matrix::setElement(int x, int y, double value) {
 }
 
 string Matrix::showRow(int row) {
-	stringstream s;        
+	stringstream s;  
 	if (row>=0 && row<height) {
 		_ifor(width) s<<matrix[row][i]<<";";
 	}
@@ -133,8 +133,11 @@ Matrix::Matrix(string path) {
 	string s;
 	inputFile >> s;
 	string *t = parser(s);
-	width = str2Int(t[0]); height = str2Int(t[1]);
+	width = str2Int(t[0]);
+	height = str2Int(t[1]);
+
 	matrix=createMatrix(height,width);
+
 	_ifor(height) {
 		s="";
 		inputFile >> s;
