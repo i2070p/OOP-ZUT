@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 	m2->save("macierz3.txt");
 	Matrix *m3 = new Matrix("macierz3.txt");
 	m3->add(10);
-	m3->save("macierz3.txt");
+	m3->save("macierz4.txt");
 	cout << *m3;
 	getchar();
 	return(EXIT_SUCCESS);
