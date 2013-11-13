@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
 		if (tmps->getInfo()=="PassOb") {
 			PassiveObject *passOb=(PassiveObject*)tmps;
 			cout << "\nThis is obstacle!" << endl;
-			if (escape) { // 0 - przejdz, 1 - rozwal
+			if (escape) { // 1 - przejdz, 0 - rozwal
 				cout << endl;
 				for (int i=0; i<passOb->getSize(); i++) { 
 					steps++;
