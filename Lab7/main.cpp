@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
 	OffensiveObject* player = new OffensiveObject("gracz", 50, 30, "AAAAAAAAAAAAAAAA!"); // 50 - hp, 30 - attack
 
 	GameObject *tail=NULL, *head=NULL;
-	//________________zapewnienie losowego rozkladu w liscie (x ofensywnych , y pasywnych x, y == 10 )
+	//________________zapewnienie losowego rozkladu w liscie (x ofensywnych , y pasywnych x == 5, y == 5 )
 	int offCount = 5, passCount = 5;
 	stringstream shout;
 	GameObject* tmp;
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 			}
 		}
 	}
-	//________________zapewnienie losowego rozkladu w liscie (x ofensywnych , y pasywnych x, y == 10 )
+	//________________zapewnienie losowego rozkladu w liscie (x ofensywnych , y pasywnych x == 5, y == 5 )
 
 
 
