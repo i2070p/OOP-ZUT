@@ -70,10 +70,9 @@ void ProcessList::Run() {
 
 		while (finishedCount < processCount) {
 			current->active();
-
 			for (vector<Process*>::size_type i=0; i<processCount; i++) {
-				int ioff = i + offset;
 				if (reg) {
+					int ioff = i + offset;
 					if (ioff < processCount ) tab[ioff]+=processList[i]->getStateChar(); 
 					else tab[ioff-processCount]+=processList[i]->getStateChar();
 				}
