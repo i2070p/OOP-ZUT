@@ -1,28 +1,34 @@
 #pragma once
 #include "stdafx.h"
-using namespace std;
 
 enum PState {
-	ACTIVE = 0,
-	FINISHED   = 1,
-	SUSPENDED  = 2
+        ACTIVE = 0,
+        FINISHED = 1,
+        SUSPENDED = 2
 };
 
 class Process {
-	public:
-		Process();
-		Process(int, int, int);
-		~Process();
-		void setPID(int);
-		int getPID();
-		int getStepCount();
-	    int getStepToFinish();
-		int getStepTime();
-		void setState(PState);
-		void stepMove();
-		PState getState();
-		int stepStep;
-	private:
-		int PID, stepCount, stepToFinish, stepTime;
-		PState state;
+        public:
+                Process();
+                Process(int, int, int);
+                ~Process();
+                int getPID();
+                int getStepCount();
+				int getStepToFinish();
+                int getStepTime();
+				bool isActive();
+				bool isFinished();
+				bool isSuspended();
+				void setPID(int);
+				void active();
+				void suspend();
+				void finish();
+				void reset();
+                PState doStep();
+				char getStateChar();
+        private:
+			    PState getState();
+			    void setState(PState);
+                int PID, stepCount, elementaryStep, stepToFinish, stepTime, stepMaxTime;
+				PState state;
 };
