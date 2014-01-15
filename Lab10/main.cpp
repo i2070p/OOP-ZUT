@@ -1,44 +1,76 @@
-
-
 #include "stdafx.h"
-#include <sstream>
-#include <iostream>
-#include <vector>
-#include "ProcessList.h"
-#include "ProcessRegistry.h"
-#include <time.h>
-using namespace std;
+#include "Matrix.h"
 
 int _tmain(int argc, _TCHAR* argv[]) {
-	srand(time(0));
-	ProcessList pl;
-
-	ProcessRegistry pr;
-	FIFO strategy;
 
 
-	pl.connectStrategy(&strategy);
-	pl.connectProcessRegistry(&pr);
-	pl.addProcess(3,5);
-	pl.addProcess(2,6);
-	pl.addProcess(3,3);
-	pl.addProcess(12,1);
+        /*Matrix* A = new Matrix("A.txt");
 
-	pl.addProcess(6,2);
-	pl.addProcess(1,9);
-	pl.addProcess(2,5);
-	pl.addProcess(3,2);
-	pl.addProcess(1,1);
+        Matrix* B = new Matrix("B.txt");
+        Matrix* C = NULL;
+        try {
+                C=A->mul(B);
+                C->save("C.txt");
+        }
+        catch(exception& e) {
+                cout<<e.what()<<endl;
+        }
 
-	pl.Run();
+        _ifor(A->getHeight()) cout << " " << B->showRow(i) << endl;
 
-	pl.Run();
+        _ifor(C->getHeight()) cout << A->showRow(i) << " - " << C->showRow(i) << endl;
+        Matrix * m1 = NULL;
+        try {
 
-	pl.addProcess(4,3);
-	pl.Run();
+                m1=B->mul(C);
 
-	cout << pr.toString();
-	getchar();
-	return 0;
+        }
+        catch(exception& e) {
+                cout<<e.what()<<endl;
+        }
+        Matrix * D = new Matrix("C.txt");
+        Matrix * E = D->addValue(5);
+
+        Matrix * F = E->add(D);
+        
+        _ifor(A->getHeight()) cout << " " << E->showRow(i) << " - " << D->showRow(i) << " - "<< F->showRow(i) << endl;
+
+        try {
+                A->add(B);
+        }
+        catch(exception& e) {
+                cout<<e.what()<<endl;
+        }*/
+       Matrix A("A.txt");
+       Matrix B("A.txt");
+	   Matrix C("A.txt");
+	  Matrix D;
+        try{
+         D=A+B+C;
+		
+        } catch (exception e)
+
+        {
+                cout << e.what();
+        }
+
+        _ifor(A.getHeight()) cout << A.showRow(i) << " + " << B.showRow(i) << " + "<< C.showRow(i) << " = " << D.showRow(i) << endl;
+    
+		       Matrix E("A.txt");
+
+			   Matrix F("B.txt");
+
+		 Matrix G=E*F;
+       
+		 
+		G+=G*G;
+		cout << E.showMatrix() << endl;
+		cout << F.showMatrix() << endl;
+		cout << G.showMatrix() << endl;
+
+		cout << (!G).showMatrix() << endl;
+        getchar();
+
+
+        return(0);
 }
-
